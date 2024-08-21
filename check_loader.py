@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from utils.SOODImageNet import get_loaders
+from utils.SOODImageNetDataset import get_loaders
 import random
 import torchvision.transforms.v2 as transforms
 from utils.custom_transforms import InnerRandomCrop, Resize

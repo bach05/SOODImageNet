@@ -18,12 +18,20 @@ If you use this dataset in your research, please cite the following paper:
 
 ## Installation
 
+#### Manual Installation
 ```commandline
-git clone
-cd SOOD-ImageNet-dataset
+git clone https://github.com/bach05/SOODImageNet.git
+cd SOODImageNet
 pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 
 pip install -r requirements.txt
 ```
+#### Installation via pip
+```commandline
+git clone https://github.com/bach05/SOODImageNet.git
+cd SOODImageNet
+pip install -e .
+```   
+
 ## Download and Usage of pre-compiled lists 
 
 We provide the lists used in the paper "*SOOD-ImageNet: a Large-Scale Dataset for Semantic Out-Of-Distribution Image Classification and Semantic Segmentation*" for our experiments. 
@@ -88,9 +96,11 @@ python check_loader.py --base_path download_root
 ```
 
 You easily import the datasets in your project. For example, to load the image classification dataset:
+
 ```python
-from utils.SOODImageNet import get_loaders, SOODImageNetC
+from SOODImageNet.utils.SOODImageNetDataset import get_loaders, SOODImageNetC, SOODImageNetS
 ```
+**TO DO**: add example code when you download the repo in your environment
 
 ## Data Engine 
 

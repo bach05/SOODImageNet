@@ -14,3 +14,7 @@ lists/
 compare_scoring_llm.py
 compute_statistics.py
 compute_statistics2.py
+SOODImageNet.egg*
+ **/__pycache__/*
+__pycache__/
+*.pyc
