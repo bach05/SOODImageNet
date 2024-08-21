@@ -1,0 +1,16 @@
+hf_models/
+class_extraction/
+compare_datasets_sizes.py
+data_stat/datasets_sizes.png
+data_stat/datasets_sizes.svg
+size_semantic_shift.py
+mapping/
+data_stat/
+#ignore everything in the data_class_lists folder except imagenet_cls.yaml and selected_cls.yaml
+data_class_lists/*
+!data_class_lists/imagenet_cls.yaml
+!data_class_lists/selected_cls.yaml
+lists/
+compare_scoring_llm.py
+compute_statistics.py
+compute_statistics2.py
