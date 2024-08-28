@@ -13,6 +13,7 @@ args = parser.parse_args()
 data_id = args.data_id
 info_file = f"mapping/{data_id}_human_checked_dict.yaml"
 out_file = f"mapping/{data_id}_human_checked_remove_replicas_dict.yaml"
+
 if os.path.exists(info_file):
     with open(info_file, 'r') as file:
         checked_dict = yaml.safe_load(file)
@@ -42,16 +43,6 @@ for key, value in checked_dict.items():
 
 # Check for duplicates
 duplicates = {cls: keys for cls, keys in class_occurrences.items() if len(keys) > 1}
-
-# Print the duplicates
-# if duplicates:
-#     print("Found duplicate classes in different keys:")
-#     for cls, keys in duplicates.items():
-#         print(f"Class '{cls}' found in:")
-#         for i, key in enumerate(keys):
-#             print(f"{i+1} - {key}, tot cls: {len(checked_dict[key]['human_checked_classes'])}")
-# else:
-#     print("No duplicate classes found.")
 
 # Print the duplicates and prompt user for action
 if duplicates:
@@ -92,12 +83,6 @@ if duplicates:
         ]
         selected_scores = list(np.array(checked_dict[key]['scores'])[checked_dict[key]['vis_checks']][checked_dict[key]['manually_check_images']][checked_dict[key]['replica_filter']])
         checked_dict[key]['selected_scores'] = [float(score) for score in selected_scores]
-
-    # selected_folders = list(np.array(checked_dict['folders'])[checked_dict['vis_checks']][checked_dict['manually_check_images']][checked_dict['replica_filter']])
-    # checked_dict['selectd_folders_path'] = selected_folders
-    # checked_dict['selected_folders'] = [os.path.basename(folder) for folder in selected_folders]
-    # selected_scores = list(np.array(checked_dict['scores'])[checked_dict['vis_checks']][checked_dict['manually_check_images']][checked_dict['replica_filter']])
-    # checked_dict['selected_scores'] = selected_scores
 
     # Save the updated dictionary back to the YAML file
     with open(out_file, 'w') as file:

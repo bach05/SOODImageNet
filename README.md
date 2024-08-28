@@ -32,11 +32,12 @@ cd SOODImageNet
 pip install -e .
 ```   
 
-## Download and Usage of pre-compiled lists 
+---
+# DATASET USAGE
 
-We provide the lists used in the paper "*SOOD-ImageNet: a Large-Scale Dataset for Semantic Out-Of-Distribution Image Classification and Semantic Segmentation*" for our experiments. 
+We release the dataset used in the paper "*SOOD-ImageNet: a Large-Scale Dataset for Semantic Out-Of-Distribution Image Classification and Semantic Segmentation*" for further experiments.  
 
-### Download ImageNet-21K-P
+## Download ImageNet-21K-P
 
 The images can be obtained from the official website: [Download ImageNet](http://www.image-net.org/). 
 
@@ -53,15 +54,41 @@ We used IMAGENET-21K-P dataset. After the download, your file system should look
            └── ...
 ```
 
-### Download of SOOD-ImageNet lists
+## Download of SOOD-ImageNet lists
 
+The splits and the labels are available as `.txt` file lists.
 The lists are available in the `lists.zip` file of this repository. Just run:
 ```commandline
 unzip lists.zip
 ```
-#### Additiional information
 
-Note that the lists are provided as `.txt` files. The `lists.zip` compressed folder contains 2 folders. 
+## Download segmentation masks
+
+The segmentation masks are given as PNG files of shape `HxW` where each pixel is an integer representing the class ID (0 for background).
+
+**Download the segmentation masks from the following links**: [TRAIN IID](https://drive.google.com/file/d/13o1dMAa56TqOTHyOf4gf6dFPheARqpoC/view?usp=sharing) | [TEST EASY OOD](https://drive.google.com/file/d/1AppoFP8EsPMv3pjwkmKH8ENm_FAys7UG/view?usp=drive_link) | [TEST HARD OOD](https://drive.google.com/file/d/1RqJSUjdWniBDG3dXmaF_PTbaEDQE2FEk/view?usp=drive_link)
+
+## Use the dataset in your project
+
+We provide torch datasets to load the images and labels for the image classification and semantic segmentation tasks in the `utils` folder.
+
+If everything is set up correctly, you can run the following code to test the datasets:
+```commandline
+python check_loader.py --base_path download_root
+```
+You easily import the datasets in your project. For example, to load the image classification dataset:
+
+```python
+from SOODImageNet.utils.SOODImageNetDataset import get_loaders, SOODImageNetC, SOODImageNetS
+```
+**TO DO**: add example code when you download the repo in your environment
+
+### Additional details
+
+<details>
+  <summary>CLICK TO EXPAND</summary>
+
+The `lists.zip` compressed folder contains 2 folders. 
 
 ***For the image classification task***. The folder `classification` contains the following files: 
 - `classification/train_iid.txt`, with the images we used for the *IID training*
@@ -82,31 +109,16 @@ Each line of the list is structured as follows:
 ```
 imagenet21k_train/[synset_folder]/[image_file].JPG output_test_easy_sam2/[synset_folder]/[image_file]_mask.png [class_ID] [superclass_name] [subclass_name]
 ```
-Note that the segmentation masks are given as PNG files of shape `HxW` where each pixel is an integer representing the class ID (0 for background).
+</details>
+---
 
-**DOWNLOAD PRE-LABELLED MASKS**: [TRAIN IID](https://drive.google.com/file/d/13o1dMAa56TqOTHyOf4gf6dFPheARqpoC/view?usp=sharing) | [TEST EASY OOD](https://drive.google.com/file/d/1AppoFP8EsPMv3pjwkmKH8ENm_FAys7UG/view?usp=drive_link) | [TEST HARD OOD](https://drive.google.com/file/d/1RqJSUjdWniBDG3dXmaF_PTbaEDQE2FEk/view?usp=drive_link)
-
-## Usage
-
-We provide torch datasets to load the images and labels for the image classification and semantic segmentation tasks in the `utils` folder.
-
-If everything is set up correctly, you can run the following code to test the datasets:
-```commandline
-python check_loader.py --base_path download_root
-```
-
-You easily import the datasets in your project. For example, to load the image classification dataset:
-
-```python
-from SOODImageNet.utils.SOODImageNetDataset import get_loaders, SOODImageNetC, SOODImageNetS
-```
-**TO DO**: add example code when you download the repo in your environment
-
-## Data Engine 
+# CREATE A CUSTOM SOOD DATASET
 
 If you would like to use the data engine to create your own lists from scratch, you can follow the instructions below.
 
-### Before using
+![data_engine](media/data_engine.png)
+
+## Before using
 
 Download PaliGemma model from [Hugging Face](https://huggingface.co/google/paligemma-3b-mix-224) and save it in the `hf_models` folder:
 ```commandline
@@ -115,37 +127,87 @@ mkdir hf_models
 cd hf_models
 git clone https://huggingface.co/google/paligemma-3b-mix-224
 ```
+Since requirements are heavy for the data engine, we proved them as a separate file. You can install them by running:
+```commandline
+pip install -r requirements.txt
+```
 
-### Usage
+## Usage
 
 *NOTE: tested on RTX 4090 24GB, Pytorch 2.3.1, CUDA 11.8, Python 3.10.12*
 
-**TO DO**:
-- remove useless files
-- check and remove commented code
-- remove hard coded paths
-- add parameters guide for each script
+### Classification Dataset Creation
 
-Needed files:
-- `data_class_lists/imagenet_cls.yaml`, contains class names for each synset
-- `cluster_images.py`, contains the code to create the hierarchical structure of ImageNet-21K-P using WordNet and Sentence Transformer
+We encapsulated the dataset creation process in the `sood_c_dataset_creation.sh` script. The parameters are the following:
+1.  `data_id`: symbolic name to identify the intermediate files
+2.  `root_imagenet`: the path to the ImageNet-21K-P dataset
+3. `batch_size`: the batch size to use for the CLIP score computation
+```commandline
+chmod +x sood_c_dataset_creation.sh
+./sood_c_dataset_creation.sh sood_imagenet download_root/imagenet21k_resized 512
+```
+Please, not that human interventions are required during the process. 
 
-- `data_class_lists/selected_classes.yaml`, contains the selected super-classes for the SOOD-ImageNet dataset (note that you can define your own classes if you like, but it is not guaranteed to have all of them in the final dataset due to the filtering process)
-- `vlm_superclass_building.py`, contains the code to create associate the sub-classes to the proper super-class (**TO DO**: remove hard coded paths (line 279))
+For a detailed explanation of the process, please refer to the following scripts:
 
-- `human_check_tool.py`, contains the code to perform the human checks on the images. You can interrupt the labelling and resume it. 
+<details>
+  <summary>CLICK TO EXPAND</summary>
 
-- `check_replicas.py`, contains the code to check for replicated sub-classes each super-class. The user is asked to select in which super-class to keep the sub-class.
+1. `cluster_imagenet.py`, contains the code to create the hierarchical structure of ImageNet-21K-P using WordNet and Sentence Transformer. Needs the following files:
+   - `data_class_lists/imagenet_cls.yaml`, contains class names for each synset
+```commandline
+python cluster_imagenet.py 
+```
 
-- `check_scores.py`, contains the code to filter the super-classes with a few sub-classes. Add also old scoring system. **TO DO**: add scoring with CLIP
+2. `vlm_superclass_building.py`, contains the code to create associate the sub-classes to the proper super-class. Needs the following files:
+   - `data_class_lists/imagenet_cls.yaml`, contains class names for each synset
+   - `data_class_lists/selected_classes.yaml`, contains the selected super-classes for the SOOD-ImageNet dataset (note that you can define your own classes if you like, but it is not guaranteed to have all of them in the final dataset due to the filtering process)
+```commandline
+python vlm_superclass_building.py --data_id sood_imagenet --root_imagenet download_root/imagenet21k_resized 
+```
+3. `human_check_tool.py`, contains the code to perform the human checks on the images. You can interrupt the labelling and resume it. 
+```commandline
+python human_check_tool.py --data_id sood_imagenet 
+```
 
-- Final out file `mapping/{data_id}_sub_{min_num_subclasses}_split_{split_sizes[0]}-{split_sizes[1]}.yaml`
+4. `check_replicas.py`, contains the code to check for replicated sub-classes each super-class. The user is asked to select in which super-class to keep the sub-class.
+```commandline
+python check_replicas.py --data_id sood_imagenet 
+```
 
-- Extract lists... 
+5. `check_scores.py`, contains the code to filter the super-classes with a few sub-classes. 
+```commandline
+python check_scores.py --data_id sood_imagenet --min_num_subclasses 10
+```
 
-## Classification Experiments
+6. `clip_score_generation.py`: contains the code to compute correlation scores with CLIP
+```commandline
+python clip_score_generation.py --data_id sood_imagenet --root_imagenet download_root/imagenet21k_resized --batch_size 512
+```
 
-## Segementation Experiments
+7. `outliers_detection.py`: contains the code to detect outliers in the score distribution, useful to remove spurious images in a class
+```commandline
+python outliers_detection.py 
+```
+8. `dataset_split.py`: contains the code to split the dataset in IID (train), test easy OOD and test hard OOD
+```commandline
+python dataset_split.py --root_imagenet download_root/imagenet21k_resized --p_value_1 40 --p_value_2 20
+```
+</details>
+
+### Segmentation Dataset Creation
+
+---
+
+# CLASSIFICATION EXPERIMENTS
+
+**TO BE RELEASED**
+
+---
+
+# SEGMENTATION EXPERIMENTS
+
+**TO BE RELEASED**
 
 
 
