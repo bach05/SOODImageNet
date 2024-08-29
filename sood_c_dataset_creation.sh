@@ -35,7 +35,7 @@ python check_scores.py --data_id "$DATA_ID" --min_num_subclasses 10
 
 # Step 6: Compute correlation scores with CLIP
 echo "Running clip_score_generation.py..."
-python clip_score_generation.py --data_id "$DATA_ID" --root_imagenet "$ROOT_IMAGENET" --batch_size "$BATCH_SIZE"
+python clip_score_generation.py --data_id "$DATA_ID" --root_imagenet "$ROOT_IMAGENET" --batch_size "$BATCH_SIZE" --min_num_subclasses 10
 
 # Step 7: Detect outliers in the score distribution
 echo "Running outliers_detection.py..."
@@ -43,6 +43,6 @@ python outliers_detection.py
 
 # Step 8: Split the dataset into IID (train), test easy OOD, and test hard OOD
 echo "Running dataset_split.py..."
-python dataset_split.py --root_imagenet "$ROOT_IMAGENET" --p_value_1 40 --p_value_2 20
+python dataset_split.py --root_imagenet "$ROOT_IMAGENET" --p_value_1 40 --p_value_2 20 --data_id "$DATA_ID"
 
 echo "All steps completed."

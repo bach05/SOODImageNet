@@ -63,7 +63,7 @@ def clip_score_generation(config):
     all_prompts_general = []
     all_prompts_specific = []
 
-    mapping_file = config.mapping_file
+    mapping_file = f'mapping/{config.data_id}_sub_{config.min_num_subclasses}_equalized.yaml'
     with open(mapping_file, 'r') as file:
         mapping = yaml.safe_load(file)
 
@@ -127,12 +127,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser("Clip Score Generation", add_help=True)
 
     # Existing argument
-    #parser.add_argument('--config', type=str, default='config/config_clip.yaml', help='Path to configuration file')
 
     # New arguments
     parser.add_argument('--batch_size', type=int, default=512, help='Batch size for processing')
-    parser.add_argument('--mapping_file', type=str, default='mapping/selected2imagenet_sub_10_equalized.yaml',
-                        help='Path to the mapping file')
+    parser.add_argument('--data_id', type=str, default='selected2imagenet', help='Data id')
+    parser.add_argument('--min_num_subclasses', type=int, default=10, help='Minimum number of subclasses')
     parser.add_argument('--root_imagenet', type=str, default='/media/data/Datasets/imagenet21k_resized',
                         help='Root directory of the dataset')
     parser.add_argument('--output_file', type=str, default='logit_dict_total_test.json',

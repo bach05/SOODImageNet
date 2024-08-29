@@ -77,18 +77,16 @@ def main():
     parser = argparse.ArgumentParser(description="Generate image lists divided by percentiles")
     parser.add_argument('--json_file', type=str, default='./scoring/statistics.json', help='Path to the JSON file with statistic from outliers_detection.py')
     parser.add_argument('--root_imagenet', type=str, default='/media/data/Datasets/imagenet21k_resized/imagenet21k_train/', help='Base path for the images')
-    parser.add_argument('--output_train', type=str, default='./scoring/train_iid.txt', help='Output file for training images')
-    parser.add_argument('--output_test_easy', type=str, default='./scoring/test_easy_ood.txt', help='Output file for easy test images')
-    parser.add_argument('--output_test_hard', type=str, default='./scoring/test_hard_ood.txt', help='Output file for hard test images')
+    parser.add_argument('--data_id', default='selected2imagenet', type=str, help='Data ID for the dataset')
     parser.add_argument('--p_value_1', type=float, default=40, help='Percentile value for the training set (default: 40)')
     parser.add_argument('--p_value_2', type=float, default=20, help='Percentile value for the easy test set (default: 20)')
     
     args = parser.parse_args()
 
     output_files = {
-        'train': args.output_train,
-        'test_easy': args.output_test_easy,
-        'test_hard': args.output_test_hard
+        'train': os.path.join('lists', 'classification', f"train_iid_{args.data_id}.txt"),
+        'test_easy': os.path.join('lists', 'classification', f"test_easy_ood_{args.data_id}.txt"),
+        'test_hard': os.path.join('lists', 'classification', f"test_hard_ood_{args.data_id}.txt")
     }
 
     # Generate the image lists

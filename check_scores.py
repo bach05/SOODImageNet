@@ -5,12 +5,12 @@ from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description='Process some IMAGEMET.')
 parser.add_argument('--data_id', type=str, default="selected2imagenet", help='data id')
-parser.add_argument('--min_scls', type=int, default=10, help='Minimum number of subclasses')
+parser.add_argument('--min_num_subclasses', type=int, default=10, help='Minimum number of subclasses')
 args = parser.parse_args()
 
 # Read the existing yaml file
 data_id = args.data_id
-min_num_subclasses = args.min_scls
+min_num_subclasses = args.min_num_subclasses
 info_file = f"mapping/{data_id}_human_checked_remove_replicas_dict.yaml"
 out_file = f"mapping/{data_id}_sub_{min_num_subclasses}.yaml"
 

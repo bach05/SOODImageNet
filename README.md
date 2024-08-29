@@ -11,6 +11,7 @@ Out-of-Distribution (OOD) detection in computer vision is a crucial research are
 If you use this dataset in your research, please cite the following paper:
 
 ``` bibtex
+
 @article{SOOD-ImageNet,
   title={SOOD-ImageNet: a Large-Scale Dataset for Semantic Out-Of-Distribution Image Classification and Semantic Segmentation},
   }
@@ -110,11 +111,18 @@ Each line of the list is structured as follows:
 imagenet21k_train/[synset_folder]/[image_file].JPG output_test_easy_sam2/[synset_folder]/[image_file]_mask.png [class_ID] [superclass_name] [subclass_name]
 ```
 </details>
+
 ---
 
 # CREATE A CUSTOM SOOD DATASET
 
-If you would like to use the data engine to create your own lists from scratch, you can follow the instructions below.
+If you would like to use the data engine to create your own custom lists from scratch, you can follow the instructions below.
+
+**IMPORTANT: You don't need to run this part if you want to use the SOOD-ImageNet dataset as it is.**
+
+<details>
+  <summary>CLICK TO EXPAND</summary>
+
 
 ![data_engine](media/data_engine.png)
 
@@ -136,10 +144,10 @@ pip install -r requirements.txt
 
 *NOTE: tested on RTX 4090 24GB, Pytorch 2.3.1, CUDA 11.8, Python 3.10.12*
 
-### Classification Dataset Creation
+### SOOD-ImageNet-C (classification) Creation
 
 We encapsulated the dataset creation process in the `sood_c_dataset_creation.sh` script. The parameters are the following:
-1.  `data_id`: symbolic name to identify the intermediate files
+1.  `data_id`: symbolic name to identify the output files
 2.  `root_imagenet`: the path to the ImageNet-21K-P dataset
 3. `batch_size`: the batch size to use for the CLIP score computation
 ```commandline
@@ -182,20 +190,30 @@ python check_scores.py --data_id sood_imagenet --min_num_subclasses 10
 
 6. `clip_score_generation.py`: contains the code to compute correlation scores with CLIP
 ```commandline
-python clip_score_generation.py --data_id sood_imagenet --root_imagenet download_root/imagenet21k_resized --batch_size 512
+python clip_score_generation.py --data_id sood_imagenet --root_imagenet download_root/imagenet21k_resized --batch_size 512 --min_num_subclasses 10
 ```
 
 7. `outliers_detection.py`: contains the code to detect outliers in the score distribution, useful to remove spurious images in a class
 ```commandline
 python outliers_detection.py 
 ```
+
 8. `dataset_split.py`: contains the code to split the dataset in IID (train), test easy OOD and test hard OOD
 ```commandline
-python dataset_split.py --root_imagenet download_root/imagenet21k_resized --p_value_1 40 --p_value_2 20
+python dataset_split.py --root_imagenet download_root/imagenet21k_resized --p_value_1 40 --p_value_2 20 --data_id sood_imagenet
 ```
 </details>
 
-### Segmentation Dataset Creation
+
+
+### SOOD-ImageNet-S (semantic segmentation) Creation 
+
+To generate the semantic segmentation dataset, we need to extract the segmentation mask. For the training set, we can use CLIPSeg: 
+```commandline
+python label_with_clipseg.py --root_imagenet download_root/imagenet21k_resized --data_id sood_imagenet --image_lists lists/classification/train_iid.txt
+```
+
+</details>
 
 ---
 
