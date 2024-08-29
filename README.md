@@ -235,6 +235,7 @@ python check_replicas.py --data_id sood_imagenet
 ```commandline
 python check_scores.py --data_id sood_imagenet --min_num_subclasses 10
 ```
+   - (*FACULTATIVE*) You can control distribution of the sublasses running `python equalize_size.py --data_id sood_imagenet --min_num_subclasses 10`. The script tries to obtain a more uniform distribution of the number of subclasses per superclass. 
 
 6. `clip_score_generation.py`: contains the code to compute correlation scores with CLIP
 ```commandline

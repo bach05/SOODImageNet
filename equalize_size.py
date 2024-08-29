@@ -1,4 +1,3 @@
-import numpy as np
 import yaml
 import os
 import numpy as np
@@ -6,18 +5,18 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Process some IMAGEMET.')
 parser.add_argument('--data_id', type=str, default="selected2imagenet", help='data id')
-parser.add_argument('--min_scls', type=int, default=10, help='Minimum number of subclasses')
+parser.add_argument('--min_num_subclasses', type=int, default=10, help='Minimum number of subclasses')
 
 args = parser.parse_args()
 
 # Read the existing yaml file
 data_id = args.data_id
-min_scls = args.min_scls
-data_file = f"mapping/{data_id}_sub_{min_scls}.yaml"
+min_num_subclasses = args.min_num_subclasses
+data_file = f"mapping/{data_id}_sub_{min_num_subclasses}.yaml"
 with open(data_file, 'r') as file:
     data_dict = yaml.safe_load(file)
 
-info_file = f"mapping/{data_id}_sub_{min_scls}_equalized.yaml"
+info_file = f"mapping/{data_id}_sub_{min_num_subclasses}_equalized.yaml"
 if os.path.exists(info_file):
     with open(info_file, 'r') as file:
         cmd = input(f"Equalized file {info_file} exists, do you want to load it? y/n \n")
@@ -61,26 +60,10 @@ for superclass, info in data_dict.items():
     if num_subclasses > th_max_subclasses:
         print(f"Superclass: {superclass}, Number of subclasses: {num_subclasses}")
         print(f"Removing {num_subclasses - th_max_subclasses} subclasses")
-        #print(f"Before: {info['train_filter'].count(True)} train, {info['test_easy_filter'].count(True)} test_easy, {info['test_hard_filter'].count(True)} test_hard")
 
         #generate random bool values to keep or discard from original list
         indexes = np.random.choice(num_subclasses, th_max_subclasses, replace=False)
         bool_indexes = [True if i in indexes else False for i in range(num_subclasses)]
-
-        # train_filter = [bool_indexes[i] * info['train_filter'][i] for i in range(num_subclasses)]
-        # test_easy_filter = [bool_indexes[i] * info['test_easy_filter'][i] for i in range(num_subclasses)]
-        # test_hard_filter = [bool_indexes[i] * info['test_hard_filter'][i] for i in range(num_subclasses)]
-
-        # subclasses = subclasses[:th_max_subclasses]
-        # train_filter = info['train_filter'][:th_max_subclasses]
-        # test_easy_filter = info['test_easy_filter'][:th_max_subclasses]
-        # test_hard_filter = info['test_hard_filter'][:th_max_subclasses]
-
-        # print(f"After: {train_filter.count(True)} train, {test_easy_filter.count(True)} test_easy, {test_hard_filter.count(True)} test_hard")
-        # print("************************************")
-        # checked_dict[superclass]['train_filter'] = train_filter
-        # checked_dict[superclass]['test_easy_filter'] = test_easy_filter
-        # checked_dict[superclass]['test_hard_filter'] = test_hard_filter
 
         checked_dict[superclass]['equalization_filter'] = bool_indexes
     else:
