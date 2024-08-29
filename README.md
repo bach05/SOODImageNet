@@ -82,7 +82,55 @@ You easily import the datasets in your project. For example:
 ```python
 from SOODImageNet.utils.SOODImageNetDataset import get_loaders, SOODImageNetC, SOODImageNetS
 ```
-**TO DO**: add example code when you download the repo in your environment
+Here a dummy example of how to use the dataset after installation in your workspace:
+```python
+from utils.SOODImageNetDataset import get_loaders, SOODImageNetC
+import os
+
+if __name__ == "__main__":
+    # Parameters
+    path_iid_list = os.path.join('SOODImageNet/lists/classification', 'train_iid.txt')
+    path_ood_easy_list = os.path.join('SOODImageNet/lists/classification', 'test_easy_ood.txt')
+    path_ood_hard_list = os.path.join('SOODImageNet/lists/classification', 'test_hard_ood.txt')
+    base_path = '/media/data/Datasets/imagenet21k_resized/'
+
+    batch_size = 4
+    workers = 2
+    input_shape = (224, 224)
+
+    # Create a dataset
+    with open(path_iid_list, 'r') as f:
+        file_list = f.read().splitlines()
+
+    dataset = SOODImageNetC(file_list,
+                            base_path=base_path,
+                            transform=None,
+                            mode='train_val',
+                            resize=input_shape,
+                            augmenter=None)
+
+    t_img, label, class_name, subclass_name = dataset[0]
+    print("+++++ DATASET +++++")
+    print(f"Image: {t_img.shape}, {t_img.dtype}")
+    print(f"Label: {label}")
+    print(f"Superclass: {class_name}")
+    print(f"Subclass: {subclass_name}")
+
+    # Get the dataloaders
+    train_loader, val_loader = get_loaders('classification', "train_val",
+                                           path_iid_list, base_path, batch_size, workers, input_shape=input_shape)
+    test_loader_easy = get_loaders('classification', "test",
+                                   path_ood_easy_list, base_path, batch_size, workers)
+    test_loader_hard = get_loaders('classification', "test",
+                                   path_ood_hard_list, base_path, batch_size, workers)
+
+    # Print Dataloader lengths
+    print("+++++ DATALOADERS +++++")
+    print("Train IID: ", len(train_loader))
+    print("Validation: ", len(val_loader))
+    print("Test Easy OOD: ", len(test_loader_easy))
+    print("Test Hard OOD: ", len(test_loader_hard))
+```
 
 ### Additional details
 
