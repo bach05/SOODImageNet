@@ -8,7 +8,7 @@ setup(
     install_requires=[
         # Add your project dependencies here, as listed in requirements.txt
         # e.g., 'numpy', 'torch', 'Pillow'
-        'torch', 'torchvision', 'numpy', 'matplotlib'
+        'torch', 'torchvision', 'numpy', 'matplotlib', 'opencv-python', 'pyyaml', 'tqdm'
     ],
     entry_points={
         'console_scripts': [

@@ -77,7 +77,7 @@ If everything is set up correctly, you can run the following code to test the da
 ```commandline
 python check_loader.py --base_path download_root
 ```
-You easily import the datasets in your project. For example, to load the image classification dataset:
+You easily import the datasets in your project. For example:
 
 ```python
 from SOODImageNet.utils.SOODImageNetDataset import get_loaders, SOODImageNetC, SOODImageNetS
@@ -118,7 +118,7 @@ imagenet21k_train/[synset_folder]/[image_file].JPG output_test_easy_sam2/[synset
 
 If you would like to use the data engine to create your own custom lists from scratch, you can follow the instructions below.
 
-**IMPORTANT: You don't need to run this part if you want to use the SOOD-ImageNet dataset as it is.**
+### IMPORTANT: You don't need to run this part if you want to use the SOOD-ImageNet dataset as it is.
 
 <details>
   <summary>CLICK TO EXPAND</summary>
