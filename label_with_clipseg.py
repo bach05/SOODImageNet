@@ -86,7 +86,7 @@ if __name__ == "__main__":
     parser.add_argument('--batch_size', type=int, default=8, help='Batch size for processing images')
     parser.add_argument('--num_workers', type=int, default=4, help='Number of worker threads for data loading')
     parser.add_argument('--model', type=str, default='clipseg', help='Model to use for labeling (e.g., clipseg)')
-    parser.add_argument('--data_id', type=str, default='sood_imagenet', help='Folder to save the output pseudomasks')
+    parser.add_argument('--data_id', type=str, default='sood_imagenet', help='Identifier')
     parser.add_argument('--vis_images', type=bool, default=False, help='Flag to visualize images during processing')
 
     args = parser.parse_args()

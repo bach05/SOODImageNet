@@ -138,7 +138,6 @@ if __name__ == "__main__":
                         help='Output file to save the results')
 
     args = parser.parse_args()
-
     print_config(args)
 
     clip_score_generation(args)

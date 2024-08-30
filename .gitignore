@@ -21,3 +21,9 @@ __pycache__/
 config/
 scoring/
 logs
+GroundingDINO/
+dino_weights/
+seg_masks/
+segment-anything-2/
+
+

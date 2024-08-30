@@ -254,27 +254,62 @@ python dataset_split.py --root_imagenet download_root/imagenet21k_resized --p_va
 </details>
 
 
-
 ### SOOD-ImageNet-S (semantic segmentation) Creation 
 
 To generate the semantic segmentation dataset, we need to extract the segmentation mask. For the training set, we can use CLIPSeg: 
 ```commandline
 python label_with_clipseg.py --root_imagenet download_root/imagenet21k_resized --data_id sood_imagenet --image_lists lists/classification/train_iid.txt
 ```
+To generate the segmentation masks for the test sets, we can use the following procedure. 
+
+Install GroundingDino from the official repository [Grounded-Dino](https://github.com/IDEA-Research/GroundingDINO).
+```commandline
+git clone https://github.com/IDEA-Research/GroundingDINO.git
+cd GroundingDINO/
+pip install -e .
+mkdir dino_weights
+cd dino_weights
+wget -q https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
+cd ..
+cd ..
+```
+Then, run the following script to detect the target objects in the images:
+```commandline
+python grounded_dino_labelling.py --root_imagenet download_root/imagenet21k_resized --data_id sood_imagenet --image_lists lists/classification/test_easy_ood.txt lists/classification/test_hard_ood.txt
+```
+Then, to extract the segmentation masks, we need to install the official repository of SAM 2 from [SAM 2](https://github.com/facebookresearch/segment-anything-2):
+```commandline
+git clone https://github.com/facebookresearch/segment-anything-2.git
+cd segment-anything-2
+pip install -e .
+mkdir checkpoints
+cd checkpoints && \
+./download_ckpts.sh && \
+cd ..
+cd ..
+```
+Then, run the following script to extract the segmentation masks:
+```commandline
+python grounded_sam2_labelling.py --root_imagenet download_root/imagenet21k_resized --data_id sood_imagenet --image_lists lists/classification/test_easy_ood.txt lists/classification/test_hard_ood.txt
+```
+
+To manually check images, run: 
+```commandline
+python manual_check_tool.py --root_imagenet download_root/imagenet21k_resized --data_id sood_imagenet
+```
+The tool will open a window with the image and the segmentation mask. You can rank and discard images and the generated masks.
 
 </details>
 
 ---
 
-# CLASSIFICATION EXPERIMENTS
+# LICENSE
 
-**TO BE RELEASED**
+The SOOD-ImageNet dataset is released under the [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) license.
+Note that to download the ImageNet-21K-P dataset, you need to agree to the ImageNet terms of use.
 
----
+Authors reserve the right to change the license in the future.
 
-# SEGMENTATION EXPERIMENTS
-
-**TO BE RELEASED**
-
+Authors of the SOOD-ImageNet dataset are not responsible for any misuse of the dataset or any potential harm caused by the use of the dataset.
 
 
