@@ -14,15 +14,19 @@ If you use this dataset in your research, please cite the following paper:
 
 ``` bibtex
 
-@misc{bacchin2024soodimagenetlargescaledatasetsemantic,
-      title={SOOD-ImageNet: a Large-Scale Dataset for Semantic Out-Of-Distribution Image Classification and Semantic Segmentation}, 
-      author={Alberto Bacchin and Davide Allegro and Stefano Ghidoni and Emanuele Menegatti},
-      year={2024},
-      eprint={2409.01109},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2409.01109}, 
+@InProceedings{sood-imagenet,
+author="Bacchin, Alberto
+and Allegro, Davide
+and Ghidoni, Stefano
+and Menegatti, Emanuele",
+title="SOOD-ImageNet: A Large-Scale Dataset for Semantic Out-of-Distribution Image Classification and Semantic Segmentation",
+booktitle="Computer Vision -- ECCV 2024 Workshops",
+year="2025",
+publisher="Springer Nature Switzerland",
+pages="80--97",
 }
+
+
 ```
 
 ## Installation
